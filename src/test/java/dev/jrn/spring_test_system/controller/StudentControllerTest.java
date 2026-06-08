@@ -3,6 +3,8 @@ package dev.jrn.spring_test_system.controller;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -15,6 +17,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,19 +38,18 @@ public class StudentControllerTest {
 
     @Test
     public void fetchAllStudents_ShouldReturnAllStudents() throws Exception {
-        // Mock the behavior of studentService.getAllStudents
         List<Student> students = Arrays.asList(
             new Student(1, "John", "Doe"),
             new Student(2, "Alice", "Smith")
         );
-        when(studentService.getAllStudents()).thenReturn(students);
+        when(studentService.searchStudents(isNull(), isNull(), any(Pageable.class))).thenReturn(new PageImpl<>(students));
 
-        // Perform the GET request
         mockMvc.perform(get("/api/v1/student/all"))
                .andExpect(status().isOk())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-               .andExpect(jsonPath("$", hasSize(2)))
-               .andExpect(jsonPath("$[0].firstName", is("John")))
-               .andExpect(jsonPath("$[1].lastName", is("Smith")));
+               .andExpect(jsonPath("$.content", hasSize(2)))
+               .andExpect(jsonPath("$.content[0].firstName", is("John")))
+               .andExpect(jsonPath("$.content[1].lastName", is("Smith")))
+               .andExpect(jsonPath("$.totalElements", is(2)));
     }
 }

@@ -77,7 +77,8 @@ Tests use the `test` profile and an in-memory H2 database, so MySQL is not requi
 Students:
 
 ```http
-GET /api/v1/student/all
+GET /api/v1/student/all?page=0&size=20&sort=lastName,asc&lastName=Smith
+GET /api/v1/student/list
 GET /api/v1/student/id?studentId=1
 POST /api/v1/student
 PUT /api/v1/student/1?firstName=Ada&lastName=Lovelace
@@ -87,7 +88,8 @@ DELETE /api/v1/student/1
 Tests:
 
 ```http
-GET /api/v1/test/all
+GET /api/v1/test/all?page=0&size=20&sort=testName,asc&testName=java&graded=true
+GET /api/v1/test/list
 GET /api/v1/test/id?testId=1
 POST /api/v1/test
 PUT /api/v1/test/1?testName=Distributed Systems
