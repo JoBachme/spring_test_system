@@ -2,6 +2,8 @@ package dev.jrn.spring_test_system.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import dev.jrn.spring_test_system.dto.TestRequest;
 import dev.jrn.spring_test_system.dto.TestResponse;
+import dev.jrn.spring_test_system.dto.PageResponse;
 import dev.jrn.spring_test_system.service.TestService;
 import jakarta.validation.Valid;
 
@@ -30,7 +33,16 @@ public class TestController {
     }
 
     @GetMapping(path = "/all")
-    public List<TestResponse> fetchAllTests() {
+    public PageResponse<TestResponse> fetchAllTests(
+            @RequestParam(required = false) String testName,
+            @RequestParam(required = false) Boolean graded,
+            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        return PageResponse.from(testService.searchTests(testName, graded, pageable)
+                .map(TestResponse::from));
+    }
+
+    @GetMapping(path = "/list")
+    public List<TestResponse> fetchAllTestsAsList() {
         return testService.getAllTests().stream()
                 .map(TestResponse::from)
                 .toList();

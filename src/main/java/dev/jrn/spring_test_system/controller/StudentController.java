@@ -2,6 +2,8 @@ package dev.jrn.spring_test_system.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import dev.jrn.spring_test_system.dto.StudentRequest;
 import dev.jrn.spring_test_system.dto.StudentResponse;
+import dev.jrn.spring_test_system.dto.PageResponse;
 import dev.jrn.spring_test_system.service.StudentService;
 import jakarta.validation.Valid;
 
@@ -30,7 +33,16 @@ public class StudentController {
     }
 
     @GetMapping(path = "/all")
-    public List<StudentResponse> fetchAllStudents() {
+    public PageResponse<StudentResponse> fetchAllStudents(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        return PageResponse.from(studentService.searchStudents(firstName, lastName, pageable)
+                .map(StudentResponse::from));
+    }
+
+    @GetMapping(path = "/list")
+    public List<StudentResponse> fetchAllStudentsAsList() {
         return studentService.getAllStudents().stream()
                 .map(StudentResponse::from)
                 .toList();
