@@ -98,6 +98,8 @@ DELETE /api/v1/test/1
 Student test registrations and reports:
 
 ```http
+POST /api/v1/registrations
+DELETE /api/v1/registrations?studentId=1&testId=3
 GET /api/v1/st_combination/all
 GET /api/v1/st_combination/id?studentId=1&testId=3
 GET /api/v1/st_combination/tests?studentId=1
@@ -122,7 +124,6 @@ Good next exercises for this project:
 - Replace entity request bodies with DTOs and mappers.
 - Add OpenAPI/Swagger documentation.
 - Add integration tests for the graded attempt rules.
-- Add endpoints for registering and unregistering students for tests.
 - Add Flyway migrations instead of raw SQL init files.
 - Add a simple notification preview endpoint that renders a message from the template.
 - Add GitHub Actions for `./mvnw clean test`.
