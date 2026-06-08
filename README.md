@@ -49,6 +49,13 @@ The API runs on:
 http://localhost:8080
 ```
 
+OpenAPI documentation:
+
+```text
+http://localhost:8080/swagger-ui.html
+http://localhost:8080/v3/api-docs
+```
+
 The default development database credentials are intentionally non-secret and match `docker-compose.yml`. For a custom database, copy `.env.example` to `.env` or configure these environment variables in your shell or IDE:
 
 ```bash
