@@ -1,8 +1,8 @@
 package dev.jrn.spring_test_system.controller;
 
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import dev.jrn.spring_test_system.entity.Test;
+import dev.jrn.spring_test_system.dto.TestRequest;
+import dev.jrn.spring_test_system.dto.TestResponse;
 import dev.jrn.spring_test_system.service.TestService;
 import jakarta.validation.Valid;
 
@@ -28,11 +30,17 @@ public class TestController {
     }
 
     @GetMapping(path = "/all")
-    public List<Test> fetchAllTests() { return testService.getAllTests(); }
+    public List<TestResponse> fetchAllTests() {
+        return testService.getAllTests().stream()
+                .map(TestResponse::from)
+                .toList();
+    }
 
     @GetMapping(path = "/id")
-    public Optional<Test> getTestById(@RequestParam Integer testId) {
-        return testService.getTestById(testId);
+    public TestResponse getTestById(@RequestParam Integer testId) {
+        return testService.getTestById(testId)
+                .map(TestResponse::from)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test does not exist"));
     }
 
     @DeleteMapping(path = "{testId}")
@@ -41,7 +49,7 @@ public class TestController {
     }
 
     @PostMapping
-    public void addNewTest(@Valid @RequestBody Test test) { testService.addNewTest(test); }
+    public void addNewTest(@Valid @RequestBody TestRequest test) { testService.addNewTest(test.toEntity()); }
 
 
     @PutMapping(path = "{testId}")

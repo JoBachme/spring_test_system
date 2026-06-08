@@ -1,6 +1,5 @@
 package dev.jrn.spring_test_system.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.jrn.spring_test_system.entity.StudentTest;
+import dev.jrn.spring_test_system.dto.StudentTestResponse;
 import dev.jrn.spring_test_system.entity.StudentTestId;
 import dev.jrn.spring_test_system.entity.StudentTestQueryProjection;
 import dev.jrn.spring_test_system.service.StudentTestService;
@@ -25,18 +24,16 @@ public class StudentTestController {
     }
 
     @GetMapping(path = "/all")
-    public List<StudentTest> fetchAllStudentTestCombination() {
-        List<StudentTest> list = new ArrayList<>();
-        for (StudentTest student : studentTestService.getAllStudentTestCombinations()) {
-            list.add(student);
-        }
-        return list;
+    public List<StudentTestResponse> fetchAllStudentTestCombination() {
+        return studentTestService.getAllStudentTestCombinations().stream()
+                .map(StudentTestResponse::from)
+                .toList();
     }
 
     @GetMapping(path = "/id")
-    public StudentTest fatchOneByStudentId(@RequestParam(required = true) Integer studentId,
+    public StudentTestResponse fatchOneByStudentId(@RequestParam(required = true) Integer studentId,
             @RequestParam(required = true) Integer testId) {
-        return studentTestService.getStudentTestCombinationById(new StudentTestId(studentId, testId));
+        return StudentTestResponse.from(studentTestService.getStudentTestCombinationById(new StudentTestId(studentId, testId)));
     }
 
     @GetMapping(path = "/tests")

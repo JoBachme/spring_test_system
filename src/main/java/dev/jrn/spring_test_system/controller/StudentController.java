@@ -1,8 +1,8 @@
 package dev.jrn.spring_test_system.controller;
 
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import dev.jrn.spring_test_system.entity.Student;
+import dev.jrn.spring_test_system.dto.StudentRequest;
+import dev.jrn.spring_test_system.dto.StudentResponse;
 import dev.jrn.spring_test_system.service.StudentService;
 import jakarta.validation.Valid;
 
@@ -28,11 +30,17 @@ public class StudentController {
     }
 
     @GetMapping(path = "/all")
-    public List<Student> fetchAllStudents() { return studentService.getAllStudents(); }
+    public List<StudentResponse> fetchAllStudents() {
+        return studentService.getAllStudents().stream()
+                .map(StudentResponse::from)
+                .toList();
+    }
 
     @GetMapping(path = "/id")
-    public Optional<Student> getStudentById(@RequestParam Integer studentId) {
-        return studentService.getStudentById(studentId);
+    public StudentResponse getStudentById(@RequestParam Integer studentId) {
+        return studentService.getStudentById(studentId)
+                .map(StudentResponse::from)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student does not exist"));
     }
 
     @DeleteMapping(path = "{studentId}")
@@ -41,8 +49,8 @@ public class StudentController {
     }
 
     @PostMapping
-    public void addNewStudent(@Valid @RequestBody Student student) {
-        studentService.addNewStudent(student);
+    public void addNewStudent(@Valid @RequestBody StudentRequest student) {
+        studentService.addNewStudent(student.toEntity());
     }
 
     @PutMapping(path = "{studentId}")
