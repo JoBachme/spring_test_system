@@ -119,6 +119,25 @@ GET /api/v1/message-templates/notification_sample
 PUT /api/v1/message-templates/notification_sample
 ```
 
+## Error Responses
+
+The API returns RFC 9457-style problem details for validation and business errors:
+
+```json
+{
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed",
+  "path": "/api/v1/students",
+  "errors": [
+    {
+      "field": "firstName",
+      "message": "must not be blank"
+    }
+  ]
+}
+```
+
 ## Practice Roadmap
 
 Good next exercises for this project:
