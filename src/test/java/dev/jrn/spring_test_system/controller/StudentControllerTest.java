@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,6 +24,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dev.jrn.spring_test_system.dto.StudentRequest;
 import dev.jrn.spring_test_system.entity.Student;
 import dev.jrn.spring_test_system.service.StudentService;
 
@@ -32,6 +36,9 @@ public class StudentControllerTest {
     
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockitoBean
     private StudentService studentService;
@@ -51,5 +58,21 @@ public class StudentControllerTest {
                .andExpect(jsonPath("$.content[0].firstName", is("John")))
                .andExpect(jsonPath("$.content[1].lastName", is("Smith")))
                .andExpect(jsonPath("$.totalElements", is(2)));
+    }
+
+    @Test
+    public void addNewStudent_WhenRequestInvalid_ShouldReturnValidationProblem() throws Exception {
+        StudentRequest request = new StudentRequest("", "");
+
+        mockMvc.perform(post("/api/v1/students")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title", is("Validation failed")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.detail", is("Request validation failed")))
+                .andExpect(jsonPath("$.path", is("/api/v1/students")))
+                .andExpect(jsonPath("$.errors", hasSize(2)));
     }
 }
