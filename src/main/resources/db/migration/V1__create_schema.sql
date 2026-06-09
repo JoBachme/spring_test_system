@@ -1,21 +1,21 @@
-CREATE TABLE IF NOT EXISTS notification_sample (
-    notification_name VARCHAR(300) PRIMARY KEY DEFAULT 'notification_sample',
+CREATE TABLE notification_sample (
+    notification_name VARCHAR(300) DEFAULT 'notification_sample' PRIMARY KEY,
     text_sample TEXT
 );
 
-CREATE TABLE IF NOT EXISTS students (
+CREATE TABLE students (
     id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(300) NOT NULL CHECK (LENGTH(first_name) > 0),
     last_name VARCHAR(300) NOT NULL CHECK (LENGTH(last_name) > 0)
 );
 
-CREATE TABLE IF NOT EXISTS tests (
+CREATE TABLE tests (
     id INT PRIMARY KEY AUTO_INCREMENT,
     test_name VARCHAR(300) NOT NULL CHECK (LENGTH(test_name) > 0),
     graded BOOLEAN DEFAULT false
 );
 
-CREATE TABLE IF NOT EXISTS students_tests (
+CREATE TABLE students_tests (
     student_id INT,
     test_id INT,
     passed_flag BOOLEAN DEFAULT false,

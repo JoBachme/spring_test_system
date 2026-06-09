@@ -55,7 +55,7 @@ public class StudentController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student does not exist"));
     }
 
-    @DeleteMapping(path = "{studentId}")
+    @DeleteMapping(path = "/{studentId}")
     public void deleteStudentById(@PathVariable("studentId") Integer studentId) {
         studentService.deleteStudentById(studentId);
     }
@@ -65,7 +65,7 @@ public class StudentController {
         studentService.addNewStudent(student.toEntity());
     }
 
-    @PutMapping(path = "{studentId}")
+    @PutMapping(path = "/{studentId}")
     public void updateStudent(@PathVariable("studentId") Integer studentId,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName) {

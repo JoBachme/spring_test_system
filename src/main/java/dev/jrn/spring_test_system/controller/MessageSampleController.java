@@ -22,12 +22,12 @@ public class MessageSampleController {
         this.messageSampleService = messageSampleService;
     }
 
-    @GetMapping(path = "{key}")
+    @GetMapping(path = "/{key}")
     public MessageTemplateResponse getTemplateByString(@PathVariable("key") String key) {
         return new MessageTemplateResponse(messageSampleService.getMessageTemplate(key));
     }
 
-    @PutMapping(path = "{key}")
+    @PutMapping(path = "/{key}")
     public void updateTemplate(@PathVariable("key") String key, @Valid @RequestBody MessageTemplateRequest request) {
         messageSampleService.updateTemplate(request.text(), key);
     }
