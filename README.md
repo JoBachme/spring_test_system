@@ -15,6 +15,7 @@ This project started as an interview practice exercise. It has been cleaned up a
 - MySQL for local development
 - H2 for automated tests
 - Maven Wrapper
+- GitHub Actions CI
 
 ## Domain
 
@@ -77,6 +78,8 @@ export DB_PASSWORD='spring_test_password'
 Tests use the `test` profile and an in-memory H2 database, so MySQL is not required for the test suite.
 
 The suite includes controller slice tests and integration tests for the graded attempt rules.
+
+GitHub Actions runs `./mvnw clean test` on pushes and pull requests targeting `master`.
 
 ## Sample Endpoints
 
@@ -144,9 +147,3 @@ The API returns RFC 9457-style problem details for validation and business error
   ]
 }
 ```
-
-## Practice Roadmap
-
-Good next exercises for this project:
-
-- Add GitHub Actions for `./mvnw clean test`.
