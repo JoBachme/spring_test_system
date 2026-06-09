@@ -23,7 +23,7 @@ import dev.jrn.spring_test_system.service.StudentService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = {"/api/v1/students", "/api/v1/student"})
+@RequestMapping(path = "/api/v1/students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -41,15 +41,6 @@ public class StudentController {
                 .map(StudentResponse::from));
     }
 
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @GetMapping(path = "/all")
-    public PageResponse<StudentResponse> fetchAllStudentsLegacy(
-            @RequestParam(required = false) String firstName,
-            @RequestParam(required = false) String lastName,
-            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return fetchAllStudents(firstName, lastName, pageable);
-    }
-
     @GetMapping(path = "/list")
     public List<StudentResponse> fetchAllStudentsAsList() {
         return studentService.getAllStudents().stream()
@@ -62,12 +53,6 @@ public class StudentController {
         return studentService.getStudentById(studentId)
                 .map(StudentResponse::from)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student does not exist"));
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @GetMapping(path = "/id")
-    public StudentResponse getStudentByIdQuery(@RequestParam Integer studentId) {
-        return getStudentById(studentId);
     }
 
     @DeleteMapping(path = "{studentId}")
