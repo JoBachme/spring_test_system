@@ -11,6 +11,7 @@ This project started as an interview practice exercise. It has been cleaned up a
 - Spring Web
 - Spring Data JPA
 - Bean Validation
+- Flyway
 - MySQL for local development
 - H2 for automated tests
 - Maven Wrapper
@@ -42,6 +43,9 @@ Run the application:
 ```bash
 ./mvnw spring-boot:run
 ```
+
+Flyway applies the database schema and sample data from `src/main/resources/db/migration` when the application starts.
+Existing local databases from the earlier SQL-init setup are baselined so they can keep their current data.
 
 The API runs on:
 
@@ -144,6 +148,5 @@ The API returns RFC 9457-style problem details for validation and business error
 
 Good next exercises for this project:
 
-- Add Flyway migrations instead of raw SQL init files.
 - Add a simple notification preview endpoint that renders a message from the template.
 - Add GitHub Actions for `./mvnw clean test`.
