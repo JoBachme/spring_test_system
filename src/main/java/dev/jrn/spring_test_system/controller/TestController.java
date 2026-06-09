@@ -23,7 +23,7 @@ import dev.jrn.spring_test_system.service.TestService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "api/v1/test")
+@RequestMapping(path = {"/api/v1/tests", "/api/v1/test"})
 public class TestController {
     
     private final TestService testService;
@@ -32,13 +32,22 @@ public class TestController {
         this.testService = testService;
     }
 
-    @GetMapping(path = "/all")
+    @GetMapping
     public PageResponse<TestResponse> fetchAllTests(
             @RequestParam(required = false) String testName,
             @RequestParam(required = false) Boolean graded,
             @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         return PageResponse.from(testService.searchTests(testName, graded, pageable)
                 .map(TestResponse::from));
+    }
+
+    @Deprecated(since = "0.0.1", forRemoval = true)
+    @GetMapping(path = "/all")
+    public PageResponse<TestResponse> fetchAllTestsLegacy(
+            @RequestParam(required = false) String testName,
+            @RequestParam(required = false) Boolean graded,
+            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        return fetchAllTests(testName, graded, pageable);
     }
 
     @GetMapping(path = "/list")
@@ -48,11 +57,17 @@ public class TestController {
                 .toList();
     }
 
-    @GetMapping(path = "/id")
-    public TestResponse getTestById(@RequestParam Integer testId) {
+    @GetMapping(path = "/{testId}")
+    public TestResponse getTestById(@PathVariable("testId") Integer testId) {
         return testService.getTestById(testId)
                 .map(TestResponse::from)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test does not exist"));
+    }
+
+    @Deprecated(since = "0.0.1", forRemoval = true)
+    @GetMapping(path = "/id")
+    public TestResponse getTestByIdQuery(@RequestParam Integer testId) {
+        return getTestById(testId);
     }
 
     @DeleteMapping(path = "{testId}")
@@ -69,8 +84,14 @@ public class TestController {
         testService.updateTest(testId, testName);
     }
 
-    @PutMapping(path = "/graded-status")
-    public void toggleGradedStatus(@RequestParam Integer testId) {
+    @PutMapping(path = "/{testId}/graded-status")
+    public void toggleGradedStatus(@PathVariable("testId") Integer testId) {
         testService.toggleGradedStatus(testId);
+    }
+
+    @Deprecated(since = "0.0.1", forRemoval = true)
+    @PutMapping(path = "/graded-status")
+    public void toggleGradedStatusQuery(@RequestParam Integer testId) {
+        toggleGradedStatus(testId);
     }
 }

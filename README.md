@@ -77,54 +77,52 @@ Tests use the `test` profile and an in-memory H2 database, so MySQL is not requi
 Students:
 
 ```http
-GET /api/v1/student/all?page=0&size=20&sort=lastName,asc&lastName=Smith
-GET /api/v1/student/list
-GET /api/v1/student/id?studentId=1
-POST /api/v1/student
-PUT /api/v1/student/1?firstName=Ada&lastName=Lovelace
-DELETE /api/v1/student/1
+GET /api/v1/students?page=0&size=20&sort=lastName,asc&lastName=Smith
+GET /api/v1/students/list
+GET /api/v1/students/1
+POST /api/v1/students
+PUT /api/v1/students/1?firstName=Ada&lastName=Lovelace
+DELETE /api/v1/students/1
 ```
 
 Tests:
 
 ```http
-GET /api/v1/test/all?page=0&size=20&sort=testName,asc&testName=java&graded=true
-GET /api/v1/test/list
-GET /api/v1/test/id?testId=1
-POST /api/v1/test
-PUT /api/v1/test/1?testName=Distributed Systems
-PUT /api/v1/test/graded-status?testId=1
-DELETE /api/v1/test/1
+GET /api/v1/tests?page=0&size=20&sort=testName,asc&testName=java&graded=true
+GET /api/v1/tests/list
+GET /api/v1/tests/1
+POST /api/v1/tests
+PUT /api/v1/tests/1?testName=Distributed Systems
+PUT /api/v1/tests/1/graded-status
+DELETE /api/v1/tests/1
 ```
 
 Student test registrations and reports:
 
 ```http
 POST /api/v1/registrations
-DELETE /api/v1/registrations?studentId=1&testId=3
-GET /api/v1/st_combination/all
-GET /api/v1/st_combination/id?studentId=1&testId=3
-GET /api/v1/st_combination/tests?studentId=1
-GET /api/v1/st_combination/students?testId=3
-GET /api/v1/st_combination/hasPassed?studentId=1&testId=3
-PUT /api/v1/st_combination/addTry?studentId=1&testId=3
-PUT /api/v1/st_combination/passing?studentId=1&testId=3
-GET /api/v1/st_combination/failed
+DELETE /api/v1/registrations/1/3
+GET /api/v1/student-tests
+GET /api/v1/student-tests/1/3
+GET /api/v1/student-tests/by-student/1
+GET /api/v1/student-tests/by-test/3
+GET /api/v1/student-tests/1/3/passed
+PUT /api/v1/student-tests/1/3/attempts
+PUT /api/v1/student-tests/1/3/passing-status
+GET /api/v1/student-tests/failed
 ```
 
 Message template:
 
 ```http
-GET /api/v1/messagetemplate/notification_sample
-PUT /api/v1/messagetemplate/notification_sample
+GET /api/v1/message-templates/notification_sample
+PUT /api/v1/message-templates/notification_sample
 ```
 
 ## Practice Roadmap
 
 Good next exercises for this project:
 
-- Replace entity request bodies with DTOs and mappers.
-- Add OpenAPI/Swagger documentation.
 - Add integration tests for the graded attempt rules.
 - Add Flyway migrations instead of raw SQL init files.
 - Add a simple notification preview endpoint that renders a message from the template.
