@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import dev.jrn.spring_test_system.entity.AttemptResult;
 import dev.jrn.spring_test_system.entity.StudentTest;
 import dev.jrn.spring_test_system.entity.StudentTestId;
 import dev.jrn.spring_test_system.entity.StudentTestQueryProjection;
 import dev.jrn.spring_test_system.entity.Test;
+import dev.jrn.spring_test_system.entity.TestAttempt;
 import dev.jrn.spring_test_system.repository.StudentTestRepository;
+import dev.jrn.spring_test_system.repository.TestAttemptRepository;
 import dev.jrn.spring_test_system.repository.TestRepository;
 
 @Service
@@ -19,10 +22,14 @@ public class StudentTestService {
     
     private final StudentTestRepository studentTestRepository;
     private final TestRepository testRepository;
+    private final TestAttemptRepository testAttemptRepository;
 
-    public StudentTestService(StudentTestRepository studentTestRepository, TestRepository testRepository) {
+    public StudentTestService(StudentTestRepository studentTestRepository,
+            TestRepository testRepository,
+            TestAttemptRepository testAttemptRepository) {
         this.studentTestRepository = studentTestRepository;
         this.testRepository = testRepository;
+        this.testAttemptRepository = testAttemptRepository;
     }
 
     public List<StudentTest> getAllStudentTestCombinations() {
@@ -46,7 +53,7 @@ public class StudentTestService {
     }
 
     @Transactional
-    public void addTry(Integer studentId, Integer testId) {
+    public TestAttempt submitAttempt(Integer studentId, Integer testId, AttemptResult result) {
         StudentTest st = getRegistration(studentId, testId);
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test does not exist"));
@@ -61,23 +68,22 @@ public class StudentTestService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student already used all three attempts");
         }
 
-        st.setTries(st.getTries() + 1);
+        Integer nextAttemptNumber = st.getTries() + 1;
+        TestAttempt attempt = testAttemptRepository.save(
+                new TestAttempt(st.getStudent(), test, nextAttemptNumber, result));
+
+        st.setTries(nextAttemptNumber);
+        if (result == AttemptResult.PASSED) {
+            st.setPassedFlag(true);
+        }
+
+        return attempt;
     }
 
-    @Transactional
-    public void markPassed(Integer studentId, Integer testId) {
-        StudentTest st = getRegistration(studentId, testId);
-        Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test does not exist"));
-
-        if (!Boolean.TRUE.equals(test.getGraded())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Test is not marked as graded");
-        }
-        if (st.getTries() <= 0 || st.getTries() > 3) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student can only pass after a valid graded attempt");
-        }
-
-        st.setPassedFlag(true);
+    @Transactional(readOnly = true)
+    public List<TestAttempt> getAttemptHistory(Integer studentId, Integer testId) {
+        getRegistration(studentId, testId);
+        return testAttemptRepository.findByStudentIdAndTestIdOrderByAttemptNumberAsc(studentId, testId);
     }
 
     public List<StudentTestQueryProjection> getAllFailedStudents() {

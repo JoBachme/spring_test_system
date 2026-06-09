@@ -25,11 +25,13 @@ The core model is a many-to-many relation:
 Student n:m Test
 ```
 
-The join table `students_tests` stores test-specific state:
+The join table `students_tests` stores the current test-specific state:
 
 - whether a student passed a test
 - how many attempts the student used
 - whether the test is currently treated as graded
+
+The table `test_attempts` stores the attempt history with attempt number, result, and submission timestamp.
 
 ## Run Locally
 
@@ -116,9 +118,17 @@ GET /api/v1/student-tests/1/3
 GET /api/v1/student-tests/by-student/1
 GET /api/v1/student-tests/by-test/3
 GET /api/v1/student-tests/1/3/passed
-PUT /api/v1/student-tests/1/3/attempts
-PUT /api/v1/student-tests/1/3/passing-status
+POST /api/v1/student-tests/1/3/attempts
+GET /api/v1/student-tests/1/3/attempts
 GET /api/v1/student-tests/failed
+```
+
+Submit an attempt result:
+
+```json
+{
+  "result": "PASSED"
+}
 ```
 
 Message template:

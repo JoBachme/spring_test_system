@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import dev.jrn.spring_test_system.repository.StudentRepository;
+import dev.jrn.spring_test_system.repository.TestAttemptRepository;
 import dev.jrn.spring_test_system.repository.StudentTestRepository;
 import dev.jrn.spring_test_system.repository.TestRepository;
 
@@ -31,10 +32,14 @@ class FlywayMigrationTest {
     @Autowired
     private StudentTestRepository studentTestRepository;
 
+    @Autowired
+    private TestAttemptRepository testAttemptRepository;
+
     @Test
     void flywayMigrations_ShouldCreateSchemaAndSampleData() {
         assertThat(studentRepository.count()).isEqualTo(7);
         assertThat(testRepository.count()).isEqualTo(8);
         assertThat(studentTestRepository.count()).isEqualTo(37);
+        assertThat(testAttemptRepository.count()).isEqualTo(43);
     }
 }

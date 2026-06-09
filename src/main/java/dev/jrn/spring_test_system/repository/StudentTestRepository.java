@@ -42,7 +42,7 @@ public interface StudentTestRepository extends JpaRepository<StudentTest, Studen
     @Query(value = "SELECT s.first_name AS firstName, s.last_name AS lastName, t.test_name AS testName, st.passed_flag AS passedFlag, st.tries AS tries FROM students as s\n" + //
             "INNER JOIN students_tests AS st ON s.id = st.student_id\n" + //
             "INNER JOIN tests AS t ON st.test_id = t.id\n" + //
-            "WHERE st.tries = 3", nativeQuery = true)
+            "WHERE st.tries = 3 AND st.passed_flag = false", nativeQuery = true)
     List<StudentTestQueryProjection> getAllFailedStudents();
 
 }

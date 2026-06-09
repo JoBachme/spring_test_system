@@ -4,14 +4,18 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.jrn.spring_test_system.dto.StudentTestResponse;
+import dev.jrn.spring_test_system.dto.TestAttemptRequest;
+import dev.jrn.spring_test_system.dto.TestAttemptResponse;
 import dev.jrn.spring_test_system.entity.StudentTestId;
 import dev.jrn.spring_test_system.entity.StudentTestQueryProjection;
 import dev.jrn.spring_test_system.service.StudentTestService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/v1/student-tests")
@@ -50,14 +54,19 @@ public class StudentTestController {
         return studentTestService.hasPassed(studentId, testId);
     }
 
-    @PutMapping(path = "/{studentId}/{testId}/attempts")
-    public void addTry(@PathVariable Integer studentId, @PathVariable Integer testId) {
-        studentTestService.addTry(studentId, testId);
+    @PostMapping(path = "/{studentId}/{testId}/attempts")
+    public TestAttemptResponse submitAttempt(@PathVariable Integer studentId,
+            @PathVariable Integer testId,
+            @Valid @RequestBody TestAttemptRequest request) {
+        return TestAttemptResponse.from(studentTestService.submitAttempt(studentId, testId, request.result()));
     }
 
-    @PutMapping(path = "/{studentId}/{testId}/passing-status")
-    public void markPassed(@PathVariable Integer studentId, @PathVariable Integer testId) {
-        studentTestService.markPassed(studentId, testId);
+    @GetMapping(path = "/{studentId}/{testId}/attempts")
+    public List<TestAttemptResponse> getAttemptHistory(@PathVariable Integer studentId,
+            @PathVariable Integer testId) {
+        return studentTestService.getAttemptHistory(studentId, testId).stream()
+                .map(TestAttemptResponse::from)
+                .toList();
     }
 
     @GetMapping(path = "/failed")
