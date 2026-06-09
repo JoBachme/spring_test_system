@@ -40,7 +40,7 @@ class TestControllerTest {
                 org.mockito.ArgumentMatchers.eq(true),
                 any(Pageable.class))).thenReturn(new PageImpl<>(tests));
 
-        mockMvc.perform(get("/api/v1/test/all")
+        mockMvc.perform(get("/api/v1/tests")
                         .param("testName", "algo")
                         .param("graded", "true")
                         .param("page", "0")

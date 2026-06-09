@@ -83,14 +83,10 @@ class RegistrationControllerTest {
     void unregister_ShouldDeleteRegistration() throws Exception {
         studentTestRepository.save(new StudentTest(student, test, false, 0));
 
-        mockMvc.perform(delete("/api/v1/registrations")
-                        .param("studentId", student.getId().toString())
-                        .param("testId", test.getId().toString()))
+        mockMvc.perform(delete("/api/v1/registrations/{studentId}/{testId}", student.getId(), test.getId()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(delete("/api/v1/registrations")
-                        .param("studentId", student.getId().toString())
-                        .param("testId", test.getId().toString()))
+        mockMvc.perform(delete("/api/v1/registrations/{studentId}/{testId}", student.getId(), test.getId()))
                 .andExpect(status().isNotFound());
     }
 }

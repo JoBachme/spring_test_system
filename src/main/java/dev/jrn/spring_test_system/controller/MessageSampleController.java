@@ -13,7 +13,7 @@ import dev.jrn.spring_test_system.service.MessageSampleService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/api/v1/messagetemplate")
+@RequestMapping(path = {"/api/v1/message-templates", "/api/v1/messagetemplate"})
 public class MessageSampleController {
     
     private final MessageSampleService messageSampleService;

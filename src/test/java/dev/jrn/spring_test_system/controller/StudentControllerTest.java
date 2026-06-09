@@ -44,7 +44,7 @@ public class StudentControllerTest {
         );
         when(studentService.searchStudents(isNull(), isNull(), any(Pageable.class))).thenReturn(new PageImpl<>(students));
 
-        mockMvc.perform(get("/api/v1/student/all"))
+        mockMvc.perform(get("/api/v1/students"))
                .andExpect(status().isOk())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                .andExpect(jsonPath("$.content", hasSize(2)))
