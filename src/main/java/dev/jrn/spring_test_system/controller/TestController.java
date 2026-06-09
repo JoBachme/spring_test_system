@@ -55,7 +55,7 @@ public class TestController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Test does not exist"));
     }
 
-    @DeleteMapping(path = "{testId}")
+    @DeleteMapping(path = "/{testId}")
     public void deleteTestById(@PathVariable("testId") Integer testId) {
         testService.deleteTestById(testId);
     }
@@ -64,7 +64,7 @@ public class TestController {
     public void addNewTest(@Valid @RequestBody TestRequest test) { testService.addNewTest(test.toEntity()); }
 
 
-    @PutMapping(path = "{testId}")
+    @PutMapping(path = "/{testId}")
     public void updateTest(@PathVariable("testId") Integer testId, @RequestParam(required = false) String testName) {
         testService.updateTest(testId, testName);
     }
