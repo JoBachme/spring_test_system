@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.jrn.spring_test_system.dto.StudentTestResponse;
@@ -15,7 +14,7 @@ import dev.jrn.spring_test_system.entity.StudentTestQueryProjection;
 import dev.jrn.spring_test_system.service.StudentTestService;
 
 @RestController
-@RequestMapping(path = {"/api/v1/student-tests", "/api/v1/st_combination"})
+@RequestMapping(path = "/api/v1/student-tests")
 public class StudentTestController {
     
     private final StudentTestService studentTestService;
@@ -64,48 +63,6 @@ public class StudentTestController {
     @GetMapping(path = "/failed")
     public List<StudentTestQueryProjection> getAllFailedStudents() {
         return studentTestService.getAllFailedStudents();
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @GetMapping(path = "/all")
-    public List<StudentTestResponse> fetchAllStudentTestCombinationsLegacy() {
-        return fetchAllStudentTestCombinations();
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @GetMapping(path = "/id")
-    public StudentTestResponse fetchOneByStudentIdQuery(@RequestParam Integer studentId, @RequestParam Integer testId) {
-        return fetchOneByStudentId(studentId, testId);
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @GetMapping(path = "/tests")
-    public List<StudentTestQueryProjection> fetchAllByStudentIdQuery(@RequestParam Integer studentId) {
-        return fetchAllByStudentId(studentId);
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @GetMapping(path = "/students")
-    public List<StudentTestQueryProjection> fetchAllByTestIdQuery(@RequestParam Integer testId) {
-        return fetchAllByTestId(testId);
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @GetMapping(path = "/hasPassed")
-    public Boolean hasPassedQuery(@RequestParam Integer studentId, @RequestParam Integer testId) {
-        return hasPassed(studentId, testId);
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @PutMapping(path = "/addTry")
-    public void addTryQuery(@RequestParam Integer studentId, @RequestParam Integer testId) {
-        addTry(studentId, testId);
-    }
-
-    @Deprecated(since = "0.0.1", forRemoval = true)
-    @PutMapping(path = "/passing")
-    public void markPassedQuery(@RequestParam Integer studentId, @RequestParam Integer testId) {
-        markPassed(studentId, testId);
     }
 
 }
