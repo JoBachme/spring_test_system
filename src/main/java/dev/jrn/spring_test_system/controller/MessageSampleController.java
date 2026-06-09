@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.jrn.spring_test_system.dto.MessagePreviewResponse;
 import dev.jrn.spring_test_system.dto.MessageTemplateRequest;
 import dev.jrn.spring_test_system.dto.MessageTemplateResponse;
 import dev.jrn.spring_test_system.service.MessageSampleService;
@@ -25,6 +27,13 @@ public class MessageSampleController {
     @GetMapping(path = "/{key}")
     public MessageTemplateResponse getTemplateByString(@PathVariable("key") String key) {
         return new MessageTemplateResponse(messageSampleService.getMessageTemplate(key));
+    }
+
+    @GetMapping(path = "/{key}/preview")
+    public MessagePreviewResponse previewTemplate(@PathVariable("key") String key,
+            @RequestParam Integer studentId,
+            @RequestParam Integer testId) {
+        return new MessagePreviewResponse(messageSampleService.previewMessage(key, studentId, testId));
     }
 
     @PutMapping(path = "/{key}")

@@ -122,6 +122,7 @@ Message template:
 
 ```http
 GET /api/v1/message-templates/notification_sample
+GET /api/v1/message-templates/notification_sample/preview?studentId=1&testId=3
 PUT /api/v1/message-templates/notification_sample
 ```
 
@@ -148,5 +149,4 @@ The API returns RFC 9457-style problem details for validation and business error
 
 Good next exercises for this project:
 
-- Add a simple notification preview endpoint that renders a message from the template.
 - Add GitHub Actions for `./mvnw clean test`.

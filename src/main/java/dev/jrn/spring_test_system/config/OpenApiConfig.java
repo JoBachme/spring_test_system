@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         info = @Info(
                 title = "Spring Test System API",
                 version = "0.1.0",
-                description = "API for managing students, tests, graded attempts, and result reporting."
+                description = "API for managing students, tests, graded attempts, result reporting, and notification previews."
         ),
         servers = @Server(url = "http://localhost:8080", description = "Local development")
 )
