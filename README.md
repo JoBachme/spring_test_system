@@ -10,6 +10,7 @@ This project started as an interview practice exercise. It has been cleaned up a
 - Spring Boot 3.5.14
 - Spring Web
 - Spring Data JPA
+- Spring Security
 - Bean Validation
 - Flyway
 - MySQL for local development
@@ -71,6 +72,17 @@ export DB_USERNAME='spring_test_user'
 export DB_PASSWORD='spring_test_password'
 ```
 
+Default development API users:
+
+```text
+admin / admin-password
+student1 / student-password
+```
+
+The admin user can manage students, tests, registrations, attempts, message templates, and reports.
+The student user can only read results for student ID `1`.
+Override these credentials with `APP_ADMIN_USERNAME`, `APP_ADMIN_PASSWORD`, `APP_USER_USERNAME`, `APP_USER_PASSWORD`, and `APP_USER_STUDENT_ID`.
+
 ## Test
 
 ```bash
@@ -84,6 +96,12 @@ The suite includes controller slice tests and integration tests for the graded a
 GitHub Actions runs `./mvnw clean test` on pushes and pull requests targeting `master`.
 
 ## Sample Endpoints
+
+The API uses HTTP Basic authentication. Example:
+
+```bash
+curl -u admin:admin-password http://localhost:8080/api/v1/students
+```
 
 Students:
 

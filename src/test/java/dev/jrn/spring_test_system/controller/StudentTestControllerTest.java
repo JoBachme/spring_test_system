@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,6 +22,7 @@ import dev.jrn.spring_test_system.entity.StudentTestId;
 import dev.jrn.spring_test_system.service.StudentTestService;
 
 @WebMvcTest(StudentTestController.class)
+@WithMockUser(roles = "ADMIN")
 class StudentTestControllerTest {
 
     @Autowired

@@ -1,5 +1,6 @@
 package dev.jrn.spring_test_system.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,11 +26,13 @@ public class MessageSampleController {
     }
 
     @GetMapping(path = "/{key}")
+    @PreAuthorize("hasRole('ADMIN')")
     public MessageTemplateResponse getTemplateByString(@PathVariable("key") String key) {
         return new MessageTemplateResponse(messageSampleService.getMessageTemplate(key));
     }
 
     @GetMapping(path = "/{key}/preview")
+    @PreAuthorize("hasRole('ADMIN')")
     public MessagePreviewResponse previewTemplate(@PathVariable("key") String key,
             @RequestParam Integer studentId,
             @RequestParam Integer testId) {
@@ -37,6 +40,7 @@ public class MessageSampleController {
     }
 
     @PutMapping(path = "/{key}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateTemplate(@PathVariable("key") String key, @Valid @RequestBody MessageTemplateRequest request) {
         messageSampleService.updateTemplate(request.text(), key);
     }
