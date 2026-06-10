@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class TestController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<TestResponse> fetchAllTests(
             @RequestParam(required = false) String testName,
             @RequestParam(required = false) Boolean graded,
@@ -42,6 +44,7 @@ public class TestController {
     }
 
     @GetMapping(path = "/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<TestResponse> fetchAllTestsAsList() {
         return testService.getAllTests().stream()
                 .map(TestResponse::from)
@@ -49,6 +52,7 @@ public class TestController {
     }
 
     @GetMapping(path = "/{testId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public TestResponse getTestById(@PathVariable("testId") Integer testId) {
         return testService.getTestById(testId)
                 .map(TestResponse::from)
@@ -56,20 +60,24 @@ public class TestController {
     }
 
     @DeleteMapping(path = "/{testId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteTestById(@PathVariable("testId") Integer testId) {
         testService.deleteTestById(testId);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public void addNewTest(@Valid @RequestBody TestRequest test) { testService.addNewTest(test.toEntity()); }
 
 
     @PutMapping(path = "/{testId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateTest(@PathVariable("testId") Integer testId, @RequestParam(required = false) String testName) {
         testService.updateTest(testId, testName);
     }
 
     @PutMapping(path = "/{testId}/graded-status")
+    @PreAuthorize("hasRole('ADMIN')")
     public void toggleGradedStatus(@PathVariable("testId") Integer testId) {
         testService.toggleGradedStatus(testId);
     }

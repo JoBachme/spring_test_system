@@ -2,6 +2,7 @@ package dev.jrn.spring_test_system.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ public class StudentTestController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<StudentTestResponse> fetchAllStudentTestCombinations() {
         return studentTestService.getAllStudentTestCombinations().stream()
                 .map(StudentTestResponse::from)
@@ -35,26 +37,31 @@ public class StudentTestController {
     }
 
     @GetMapping(path = "/{studentId}/{testId}")
+    @PreAuthorize("@studentAccessEvaluator.canAccessStudent(authentication, #studentId)")
     public StudentTestResponse fetchOneByStudentId(@PathVariable Integer studentId, @PathVariable Integer testId) {
         return StudentTestResponse.from(studentTestService.getStudentTestCombinationById(new StudentTestId(studentId, testId)));
     }
 
     @GetMapping(path = "/by-student/{studentId}")
+    @PreAuthorize("@studentAccessEvaluator.canAccessStudent(authentication, #studentId)")
     public List<StudentTestQueryProjection> fetchAllByStudentId(@PathVariable Integer studentId) {
         return studentTestService.findAllByStudentId(studentId);
     }
 
     @GetMapping(path = "/by-test/{testId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<StudentTestQueryProjection> fetchAllByTestId(@PathVariable Integer testId) {
         return studentTestService.findAllByTestId(testId);
     }
     
     @GetMapping(path = "/{studentId}/{testId}/passed")
+    @PreAuthorize("@studentAccessEvaluator.canAccessStudent(authentication, #studentId)")
     public Boolean hasPassed(@PathVariable Integer studentId, @PathVariable Integer testId) {
         return studentTestService.hasPassed(studentId, testId);
     }
 
     @PostMapping(path = "/{studentId}/{testId}/attempts")
+    @PreAuthorize("hasRole('ADMIN')")
     public TestAttemptResponse submitAttempt(@PathVariable Integer studentId,
             @PathVariable Integer testId,
             @Valid @RequestBody TestAttemptRequest request) {
@@ -62,6 +69,7 @@ public class StudentTestController {
     }
 
     @GetMapping(path = "/{studentId}/{testId}/attempts")
+    @PreAuthorize("@studentAccessEvaluator.canAccessStudent(authentication, #studentId)")
     public List<TestAttemptResponse> getAttemptHistory(@PathVariable Integer studentId,
             @PathVariable Integer testId) {
         return studentTestService.getAttemptHistory(studentId, testId).stream()
@@ -70,6 +78,7 @@ public class StudentTestController {
     }
 
     @GetMapping(path = "/failed")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<StudentTestQueryProjection> getAllFailedStudents() {
         return studentTestService.getAllFailedStudents();
     }

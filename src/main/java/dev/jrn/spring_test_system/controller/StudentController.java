@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class StudentController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<StudentResponse> fetchAllStudents(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
@@ -42,6 +44,7 @@ public class StudentController {
     }
 
     @GetMapping(path = "/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<StudentResponse> fetchAllStudentsAsList() {
         return studentService.getAllStudents().stream()
                 .map(StudentResponse::from)
@@ -49,6 +52,7 @@ public class StudentController {
     }
 
     @GetMapping(path = "/{studentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public StudentResponse getStudentById(@PathVariable("studentId") Integer studentId) {
         return studentService.getStudentById(studentId)
                 .map(StudentResponse::from)
@@ -56,16 +60,19 @@ public class StudentController {
     }
 
     @DeleteMapping(path = "/{studentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteStudentById(@PathVariable("studentId") Integer studentId) {
         studentService.deleteStudentById(studentId);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public void addNewStudent(@Valid @RequestBody StudentRequest student) {
         studentService.addNewStudent(student.toEntity());
     }
 
     @PutMapping(path = "/{studentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateStudent(@PathVariable("studentId") Integer studentId,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName) {
